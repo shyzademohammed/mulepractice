@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e770704c-77d2-4806-ade1-4349b65f815c" >
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<configuration-properties file="C:\\Users\\arrehman\\Desktop\\http.properties"/>
+	
+	<flow name="http_sample_serviceFlow" doc:id="f09be392-5ec2-4b6a-b627-56ba04610930" >
+		<http:listener doc:name="Listener" doc:id="a51bdb71-0568-4a6c-b819-a5a801e3c46b" config-ref="HTTP_Listener_config" path="/test" allowedMethods="GET"/>
+		<set-payload value="${http.name}" doc:name="Set Payload" doc:id="9724cf66-9280-438b-a992-e0bd34de6c24" />
+		<ee:transform doc:name="Transform Message" doc:id="fe96e6f5-e5b9-441b-832f-24ae2700c61c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	employee:
+	{
+		eno:101,
+		ename:payload,
+		ecity:"jax"
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7555afca-fea3-4cd1-aebf-976d63d8590f" message="the value of cloud region ${cloudhub.region}"/>
+	</flow>
+</mule>
